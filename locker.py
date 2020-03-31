@@ -16,6 +16,8 @@ class Interpreter(object):
 
         if self.command not in available_command:
             message = "%s tidak terdefinisi." % self.command
+        elif self.command != 'init' and self.command != 'exit' and len(self.locker_data) < 1:
+            message = "Anda belum menginialisasi jumlah loker."
         elif self.command in single_argument and len(self.args) != 1:
             message = "%s hanya menerima 1 argumen." % self.command
         elif self.command in two_argument and len(self.args) != 2:
@@ -35,7 +37,6 @@ class Interpreter(object):
             if len(self.locker_data):
                 self.locker_data.clear()
             return self.do_init()
-
         elif self.command == 'exit':
             return self.do_exit()
         elif self.command == 'status':
@@ -50,13 +51,18 @@ class Interpreter(object):
             return self.do_find()
 
     def do_init(self):
-        if not self.args[0].isdigit():
-            print("Tipe argumen harus angka.")
-            return False
+        try:
+            total_locker = int(self.args[0])
+            if total_locker < 1:
+                print("Tipe argumen harus angka dan minimal 1.")
+                return False
 
-        total_locker = int(self.args[0])
-        for i in range(total_locker):
-            self.locker_data.append([i+1, None, None])
+            for i in range(total_locker):
+                self.locker_data.append([i+1, None, None])
+            
+            print("Berhasil membuat loker dengan jumlah %s." % total_locker)
+        except:
+            print("Tipe argumen harus angka dan minimal 1.")
 
     def do_input(self):
         input = self.args
@@ -64,10 +70,6 @@ class Interpreter(object):
         id_number = input[1]
 
         # validate locker is available
-        if len(self.locker_data) < 1:
-            print("Anda belum menginialisasi jumlah loker.")
-            return False
-
         available = False
         no_locker = 0
         for locker in self.locker_data:
@@ -86,10 +88,6 @@ class Interpreter(object):
         print("Kartu identitas tersimpan pada loker nomer %d." % no_locker)
 
     def do_status(self):
-        if len(self.locker_data) < 1:
-            print("Anda belum menginialisasi jumlah loker.")
-            return False
-
         print("No Loker                  Tipe ID                 No ID\n")
         for locker in self.locker_data:
             no = locker[0]
