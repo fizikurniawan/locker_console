@@ -1,0 +1,12 @@
+.DS_Store
+.pyc
+__pycache__
+__pycache__/*
+
+# vscode settings
+.vscode/*
+
+# coverage
+htmlcov
+htmlcov/*
+.coverage
